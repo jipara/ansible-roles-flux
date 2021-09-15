@@ -1,0 +1,6 @@
+---
+- name: install Flux 2 and make communication between git and flux
+  hosts: localhost
+  roles:
+    - kubectl
+    - flux
