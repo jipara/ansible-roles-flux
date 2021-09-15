@@ -1,0 +1,19 @@
+---
+- name: install flux latest vesrion
+  shell: "flux install"
+
+- name: create git source from secretsmanager
+  shell: "aws --region us-east-2 secretsmanager get-secret-value --secret-id=GITHUB_TOKEN1 | jq -r '.SecretString' | jq -r .password"
+  register: gitops_password
+
+- name: set-facts
+  set_fact:
+    gitops_password: "{{ gitops_password.stdout }}"
+    run_once: true
+  delegate_to: 127.0.0.1
+
+- name: create git source
+  shell: "flux create source git flux-system22 --url=https://github.com/jipara/flux-calico-network --username=jipara --password={{ gitops_password }} --branch=master -n flux-system"
+
+- name: create kustomization
+  shell: "flux create kustomization webapp-dev --source=flux-system22 --prune=true --interval=5m"
