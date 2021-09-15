@@ -12,6 +12,9 @@
     run_once: true
   delegate_to: 127.0.0.1
 
+- name: create ns for flux
+  shell: "kubectl create ns flux-system"
+
 - name: create git source
   shell: "flux create source git flux-system22 --url=https://github.com/jipara/flux-calico-network --username=jipara --password={{ gitops_password }} --branch=master -n flux-system"
 
